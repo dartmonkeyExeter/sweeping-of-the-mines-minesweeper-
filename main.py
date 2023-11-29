@@ -74,7 +74,7 @@ def flood_fill(hidden, shown, check_row, check_col):
                 break
         for i in range(-1, 2): 
             for j in range(-1, 2):
-                if (i == 0 and j == 0) or (i == j) or (i==-j) or ((check_row + i) < 2) or ((check_col + j) < 1): 
+                if (i == 0 and j == 0) or ((check_row + i) < 2) or ((check_col + j) < 1): 
                     continue
                 try:
                     if hidden[check_row + i][check_col + j] != "💣":
@@ -149,6 +149,7 @@ def gameloop():
         
         flood_fill(hidden_grid, shown_grid, row, col)
 
+        display_grid(hidden_grid)
         display_grid(shown_grid)
 
 gameloop()
