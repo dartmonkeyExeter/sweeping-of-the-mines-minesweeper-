@@ -56,7 +56,7 @@ def check_surrounding(grid, check_row, check_col):
                 pass
     return bombs
 
-def flood_fill(hidden, shown, check_row, check_col):
+def flood_fill(hidden, shown, check_row, check_col): 
     flooding = True
     checked = []
     to_check = []
@@ -113,11 +113,42 @@ def gameloop():
 
     place_bombs(hidden_grid)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
+
     if surrounding_bombs > 0:
         hidden_grid[row][col] = str(f' {surrounding_bombs}')
         shown_grid[row][col] = str(f' {surrounding_bombs}')
+    
     flood_fill(hidden_grid, shown_grid, row, col)
-    display_grid(hidden_grid)
+
     display_grid(shown_grid)
+
+    while True:
+        choice = input("where: ").lower().strip()
+        try:
+            coord_char = choice[0]
+            coord_num = int(choice[1:])   
+            if (len(choice) < 2 or len(choice) > 3 or coord_char not in alphabet or coord_num > 26 or coord_num < 1):
+                raise(ValueError) # i definitely shouldn't do this but i'm going to anyway
+        except (IndexError, ValueError):
+            print("please enter a valid grid coordinate")
+            continue
+        
+        row = letter_to_number[coord_char] + 1
+        col = coord_num
+
+        if hidden_grid[row][col] == "💣":
+            display_grid(hidden_grid)
+            print("game over!!!")
+            break
+        
+        surrounding_bombs = check_surrounding(hidden_grid, row, col)
+
+        if surrounding_bombs > 0:
+            hidden_grid[row][col] = str(f' {surrounding_bombs}')
+            shown_grid[row][col] = str(f' {surrounding_bombs}')
+        
+        flood_fill(hidden_grid, shown_grid, row, col)
+
+        display_grid(shown_grid)
 
 gameloop()
