@@ -4,8 +4,8 @@ from random import randint
 alphabet = [chr(i) for i in range(97, 123)]
 letter_to_number = letter_to_number = {letter: index + 1 for index, letter in enumerate(alphabet)}
 
-def create_grid():
-    hidden_grid = [[ "⬛" for i in range(16)] for j in range(16)]
+def create_grid(grid_size):
+    hidden_grid = [[ "⬛" for i in range(grid_size)] for j in range(grid_size)]
     new_row = ["  "]
     new_row_2 = ["  "]
     for i in range(len(hidden_grid)):
@@ -28,11 +28,11 @@ def display_grid(grid):
     for i in grid:
         print("".join(i))
 
-def place_bombs(hidden_grid):
+def place_bombs(hidden_grid, amount_of_bombs, grid_size):
     i = 0
-    while i < 40:
-        row = randint(2, 17)
-        col = randint(1, 16)
+    while i < amount_of_bombs:
+        row = randint(2, grid_size + 1)
+        col = randint(1, grid_size)
         if hidden_grid[row][col] == "⬛":
             hidden_grid[row][col] = "💣"
         else:
@@ -91,7 +91,7 @@ def flood_fill(hidden, shown, check_row, check_col):
         count += 1
 
 def gameloop():
-    shown_grid, hidden_grid = create_grid()
+    shown_grid, hidden_grid = create_grid(8)
     display_grid(grid=shown_grid)
     while True:
         first_choice = input("where (type f in front of grid co-ordinate to flag): ").lower().strip()
@@ -111,7 +111,7 @@ def gameloop():
     hidden_grid[row][col] = "⬜"
     shown_grid[row][col] = "⬜"
 
-    place_bombs(hidden_grid)
+    place_bombs(hidden_grid, 10, 8)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
 
     if surrounding_bombs > 0:
