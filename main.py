@@ -33,7 +33,7 @@ def place_bombs(hidden_grid):
     while i < 40:
         row = randint(2, 17)
         col = randint(1, 16)
-        if hidden_grid[row][col] != "💣":
+        if hidden_grid[row][col] == "⬛":
             hidden_grid[row][col] = "💣"
         else:
             continue
@@ -58,21 +58,37 @@ def check_surrounding(grid, check_row, check_col):
 
 def flood_fill(hidden, shown, check_row, check_col):
     flooding = True
+    checked = []
+    to_check = []
+    count = 0
     while flooding:
+        try:
+            to_check = [item for item in to_check if item not in checked]
+            check_row = to_check[0][0]
+            check_col = to_check[0][1]
+            to_check.pop(0)
+        except:
+            if count == 0:
+                pass
+            else:
+                break
         for i in range(-1, 2): 
             for j in range(-1, 2):
-                if (i == 0 and j == 0) or (i == j) or ((i + 2)== j) or ((i - 2)== j): 
+                if (i == 0 and j == 0) or (i == j) or (i==-j) or ((check_row + i) < 2) or ((check_col + j) < 1): 
                     continue
-                if hidden[check_row + i][check_col + j] != "💣" or hidden[check_row + i][check_col + j]:
-                    surrounding_bombs = check_surrounding(hidden, check_row, check_col)
-                    if surrounding_bombs > 0:
-                        hidden[check_row + i][check_col + j] = surrounding_bombs
-                        shown[check_row + i][check_col + j] = surrounding_bombs
-                    else:
-                        hidden[check_row + i][check_col + j] = "⬜"
-                        shown[check_row + i][check_col + j] = "⬜"
-        flooding = False
-                
+                try:
+                    if hidden[check_row + i][check_col + j] != "💣":
+                        surrounding_bombs = check_surrounding(hidden, check_row + i, check_col + j)
+                        if surrounding_bombs > 0:
+                            hidden[check_row + i][check_col + j] = str(f' {surrounding_bombs}')
+                            shown[check_row + i][check_col + j] = str(f' {surrounding_bombs}')
+                        else:
+                            hidden[check_row + i][check_col + j] = "⬜"
+                            shown[check_row + i][check_col + j] = "⬜"
+                            to_check.append([check_row + i, check_col + j])
+                except: continue
+        checked.append([check_row, check_col])
+        count += 1
 
 def gameloop():
     shown_grid, hidden_grid = create_grid()
@@ -98,8 +114,8 @@ def gameloop():
     place_bombs(hidden_grid)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
     if surrounding_bombs > 0:
-        hidden_grid[row][col] = surrounding_bombs
-        shown_grid[row][col] = surrounding_bombs
+        hidden_grid[row][col] = str(f' {surrounding_bombs}')
+        shown_grid[row][col] = str(f' {surrounding_bombs}')
     flood_fill(hidden_grid, shown_grid, row, col)
     display_grid(hidden_grid)
     display_grid(shown_grid)
