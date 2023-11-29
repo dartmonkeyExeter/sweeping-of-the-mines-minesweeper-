@@ -94,7 +94,7 @@ def gameloop():
     shown_grid, hidden_grid = create_grid()
     display_grid(grid=shown_grid)
     while True:
-        first_choice = input("where: ").lower().strip()
+        first_choice = input("where (type f in front of grid co-ordinate to flag): ").lower().strip()
         try:
             coord_char = first_choice[0]
             coord_num = int(first_choice[1:])   
