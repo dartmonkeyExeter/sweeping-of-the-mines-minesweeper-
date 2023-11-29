@@ -56,8 +56,23 @@ def check_surrounding(grid, check_row, check_col):
                 pass
     return bombs
 
-def flood_fill():
-    pass # ill code later
+def flood_fill(hidden, shown, check_row, check_col):
+    flooding = True
+    while flooding:
+        for i in range(-1, 2): 
+            for j in range(-1, 2):
+                if (i == 0 and j == 0) or (i == j) or ((i + 2)== j) or ((i - 2)== j): 
+                    continue
+                if hidden[check_row + i][check_col + j] != "💣" or hidden[check_row + i][check_col + j]:
+                    surrounding_bombs = check_surrounding(hidden, check_row, check_col)
+                    if surrounding_bombs > 0:
+                        hidden[check_row + i][check_col + j] = surrounding_bombs
+                        shown[check_row + i][check_col + j] = surrounding_bombs
+                    else:
+                        hidden[check_row + i][check_col + j] = "⬜"
+                        shown[check_row + i][check_col + j] = "⬜"
+        flooding = False
+                
 
 def gameloop():
     shown_grid, hidden_grid = create_grid()
@@ -85,6 +100,7 @@ def gameloop():
     if surrounding_bombs > 0:
         hidden_grid[row][col] = surrounding_bombs
         shown_grid[row][col] = surrounding_bombs
+    flood_fill(hidden_grid, shown_grid, row, col)
     display_grid(hidden_grid)
     display_grid(shown_grid)
 
