@@ -124,46 +124,39 @@ def gameloop():
 
     while True:
         flag = False
-        choice = input("grid co-ordinate (write F in front of grid co-ord to flag): ").lower().strip()
-        if len(choice) == 4:
-            try:
-                coord_char = choice[1]
-                coord_num = int(choice[1:])
-                if coord_char not in alphabet or coord_num > 26 or coord_num < 1:
-                    raise ValueError
-                flag = True
-            except (IndexError, ValueError):
-                print("please enter a valid grid coordinate")
-        elif len(choice) == 3:
+        while True:
+            choice = input("where: ").lower().strip()
             try:
                 if choice[0] == "f" and choice[1] in alphabet:
                     flag = True
-                    coord_num = int(choice[2])
+                    coord_char = choice[1]
+                    coord_num = int(choice[2:4])
                 else:
-                    coord_num = int(choice[1])
-                coord_char = choice[1]
-                if coord_char not in alphabet or coord_num > 26 or coord_num < 1:
-                    raise ValueError
+                    coord_char = choice[0]
+                    coord_num = int(choice[1:])   
+                    if (len(first_choice) < 2 or len(first_choice) > 3 or coord_char not in alphabet or coord_num > 26 or coord_num < 1):
+                        raise(ValueError) # i definitely shouldn't do this but i'm going to anyway
             except (IndexError, ValueError):
                 print("please enter a valid grid coordinate")
-        else:
-            try:
-                coord_char = first_choice[0]
-                coord_num = int(first_choice[1:])   
-                if (len(first_choice) < 2 or len(first_choice) > 3 or coord_char not in alphabet or coord_num > 26 or coord_num < 1):
-                    raise(ValueError) # i definitely shouldn't do this but i'm going to anyway
-            except (IndexError, ValueError):
-                print("please enter a valid grid coordinate")
+                continue
+            break
+
         row = letter_to_number[coord_char] + 1
         col = coord_num
-        if flag is True:
+        if flag == True:
             if shown_grid[row][col] == "🚩":
+                print("removing flag")
                 shown_grid[row][col] = "⬛"
             elif shown_grid[row][col] != "⬛":
                 print("you can't place a flag on that square!")
             else:
+                print("placing flag")
                 shown_grid[row][col] = "🚩"
         else:
+            print("sweeping mines")
+            if shown_grid[row][col] == "🚩":
+                print("there's a flag there, remove it first!")
+                continue
             if hidden_grid[row][col] == "💣":
                 display_grid(hidden_grid)
                 print("game over!!!")
@@ -177,7 +170,6 @@ def gameloop():
             
             flood_fill(hidden_grid, shown_grid, row, col)
 
-        display_grid(hidden_grid)
         display_grid(shown_grid)
 
 gameloop()
