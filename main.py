@@ -2,7 +2,7 @@ from copy import deepcopy
 from random import randint
 
 alphabet = [chr(i) for i in range(97, 123)]
-letter_to_number = letter_to_number = {letter: index + 1 for index, letter in enumerate(alphabet)}
+letter_to_number = {letter: index + 1 for index, letter in enumerate(alphabet)}
 
 def create_grid(grid_size):
     hidden_grid = [[ "⬛" for i in range(grid_size)] for j in range(grid_size)]
@@ -94,7 +94,7 @@ def gameloop():
     shown_grid, hidden_grid = create_grid(8)
     display_grid(grid=shown_grid)
     while True:
-        first_choice = input("where (type f in front of grid co-ordinate to flag): ").lower().strip()
+        first_choice = input("where: ").lower().strip()
         try:
             coord_char = first_choice[0]
             coord_num = int(first_choice[1:])   
