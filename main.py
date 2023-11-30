@@ -91,7 +91,7 @@ def flood_fill(hidden, shown, check_row, check_col):
         count += 1
 
 def gameloop():
-    shown_grid, hidden_grid = create_grid(8)
+    shown_grid, hidden_grid = create_grid(16)
     display_grid(grid=shown_grid)
     while True:
         first_choice = input("where: ").lower().strip()
@@ -111,7 +111,7 @@ def gameloop():
     hidden_grid[row][col] = "⬜"
     shown_grid[row][col] = "⬜"
 
-    place_bombs(hidden_grid, 10, 8)
+    place_bombs(hidden_grid, 40, 16)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
 
     if surrounding_bombs > 0:
