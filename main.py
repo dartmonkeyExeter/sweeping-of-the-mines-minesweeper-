@@ -90,8 +90,22 @@ def flood_fill(hidden, shown, check_row, check_col):
         checked.append([check_row, check_col])
         count += 1
 
+def win_check(shown, size, bomb_amount):
+    to_clear_amount = (size * size) - bomb_amount
+    for row in range(size + 2):
+        for col in range(size + 1):
+            if row < 2 or col < 1:
+                continue
+            if shown[row][col] != "⬛":
+                to_clear_amount -= 1
+    if to_clear_amount == 0:
+        return True
+    return False
+
 def gameloop():
-    shown_grid, hidden_grid = create_grid(16)
+    grid_size = 16
+    bomb_amount = 40
+    shown_grid, hidden_grid = create_grid(grid_size)
     display_grid(grid=shown_grid)
     while True:
         first_choice = input("where: ").lower().strip()
@@ -111,7 +125,7 @@ def gameloop():
     hidden_grid[row][col] = "⬜"
     shown_grid[row][col] = "⬜"
 
-    place_bombs(hidden_grid, 40, 16)
+    place_bombs(hidden_grid, bomb_amount, grid_size)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
 
     if surrounding_bombs > 0:
@@ -123,8 +137,13 @@ def gameloop():
     display_grid(shown_grid)
 
     while True:
+        won = win_check(shown_grid, grid_size, bomb_amount)
+        if won == True:
+            print("congrats, you won!")
+            break
         flag = False
         while True:
+
             choice = input("where: ").lower().strip()
             try:
                 if choice[0] == "f" and choice[1] in alphabet:
@@ -167,6 +186,9 @@ def gameloop():
             if surrounding_bombs > 0:
                 hidden_grid[row][col] = str(f' {surrounding_bombs}')
                 shown_grid[row][col] = str(f' {surrounding_bombs}')
+            else:
+                hidden_grid[row][col] = "⬜"
+                shown_grid[row][col] = "⬜"
             
             flood_fill(hidden_grid, shown_grid, row, col)
 
