@@ -96,15 +96,15 @@ def win_check(shown, size, bomb_amount):
         for col in range(size + 1):
             if row < 2 or col < 1:
                 continue
-            if shown[row][col] != "⬛":
+            if shown[row][col] != "⬛" or "🚩":
                 to_clear_amount -= 1
     if to_clear_amount == 0:
         return True
     return False
 
 def gameloop():
-    grid_size = 16
-    bomb_amount = 40
+    grid_size = 8
+    bomb_amount = 10
     shown_grid, hidden_grid = create_grid(grid_size)
     display_grid(grid=shown_grid)
     while True:
