@@ -117,13 +117,17 @@ def gameloop():
         except (IndexError, ValueError):
             print("please enter a valid grid coordinate")
             continue
+        
+        try:
+            row = letter_to_number[coord_char] + 1
+            col = coord_num
+
+            hidden_grid[row][col] = "⬜"
+            shown_grid[row][col] = "⬜"
+        except IndexError:
+            print("please enter a valid grid coordinate")
+            continue
         break
-
-    row = letter_to_number[coord_char] + 1
-    col = coord_num
-
-    hidden_grid[row][col] = "⬜"
-    shown_grid[row][col] = "⬜"
 
     place_bombs(hidden_grid, bomb_amount, grid_size)
     surrounding_bombs = check_surrounding(hidden_grid, row, col)
@@ -162,36 +166,39 @@ def gameloop():
 
         row = letter_to_number[coord_char] + 1
         col = coord_num
-        if flag == True:
-            if shown_grid[row][col] == "🚩":
-                print("removing flag")
-                shown_grid[row][col] = "⬛"
-            elif shown_grid[row][col] != "⬛":
-                print("you can't place a flag on that square!")
+        try:
+            if flag == True:
+                if shown_grid[row][col] == "🚩":
+                    print("removing flag")
+                    shown_grid[row][col] = "⬛"
+                elif shown_grid[row][col] != "⬛":
+                    print("you can't place a flag on that square!")
+                else:
+                    print("placing flag")
+                    shown_grid[row][col] = "🚩"
             else:
-                print("placing flag")
-                shown_grid[row][col] = "🚩"
-        else:
-            print("sweeping mines")
-            if shown_grid[row][col] == "🚩":
-                print("there's a flag there, remove it first!")
-                continue
-            if hidden_grid[row][col] == "💣":
-                display_grid(hidden_grid)
-                print("game over!!!")
-                break
-            
-            surrounding_bombs = check_surrounding(hidden_grid, row, col)
+                print("sweeping mines")
+                if shown_grid[row][col] == "🚩":
+                    print("there's a flag there, remove it first!")
+                    continue
+                if hidden_grid[row][col] == "💣":
+                    display_grid(hidden_grid)
+                    print("game over!!!")
+                    break
+                
+                surrounding_bombs = check_surrounding(hidden_grid, row, col)
 
-            if surrounding_bombs > 0:
-                hidden_grid[row][col] = str(f' {surrounding_bombs}')
-                shown_grid[row][col] = str(f' {surrounding_bombs}')
-            else:
-                hidden_grid[row][col] = "⬜"
-                shown_grid[row][col] = "⬜"
-            
-            flood_fill(hidden_grid, shown_grid, row, col)
-
+                if surrounding_bombs > 0:
+                    hidden_grid[row][col] = str(f' {surrounding_bombs}')
+                    shown_grid[row][col] = str(f' {surrounding_bombs}')
+                else:
+                    hidden_grid[row][col] = "⬜"
+                    shown_grid[row][col] = "⬜"
+                
+                flood_fill(hidden_grid, shown_grid, row, col)
+        except IndexError:
+            print("please enter a valid grid coordinate")
+            continue
         display_grid(shown_grid)
 
 gameloop()
