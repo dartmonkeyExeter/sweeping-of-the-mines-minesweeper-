@@ -90,13 +90,14 @@ def flood_fill(hidden, shown, check_row, check_col):
         checked.append([check_row, check_col])
         count += 1
 
-def win_check(hidden,shown, size, bombs):
-    to_clear_amount = bombs
+def win_check(hidden, shown, size, bombs):
+    to_clear_amount = size * size
+    to_clear_amount -= bombs
     for row in range(size + 2):
         for col in range(size + 1):
             if row < 2 or col < 1:
                 continue
-            elif hidden[row][col] == "💣" and (shown[row][col] != "⬛" or shown[row][col] != "🚩"):
+            elif hidden[row][col] != "💣" and hidden[row][col] != "⬛":
                 to_clear_amount = to_clear_amount - 1
     if to_clear_amount == 0:
         return True
@@ -104,8 +105,8 @@ def win_check(hidden,shown, size, bombs):
 
 def gameloop():
     while True:
-        grid_size = 4
-        bomb_amount = 2
+        grid_size = 10
+        bomb_amount = 20
         shown_grid, hidden_grid = create_grid(grid_size)
         display_grid(grid=shown_grid)
         while True:
